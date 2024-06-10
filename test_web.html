@@ -1,0 +1,68 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>ArcGIS Developers Guide: Display a map (2D)</title>
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.19/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.19/"></script>
+
+  <script>
+    require([
+      "esri/config",
+      "esri/WebMap",
+      "esri/views/MapView",
+      "esri/widgets/ScaleBar",
+      "esri/layers/FeatureLayer",
+      "esri/widgets/Legend",
+      "esri/smartMapping/renderers/relationship"
+    ], function(esriConfig, WebMap, MapView, ScaleBar, Legend,FeatureLayer,relationshipRendererCreator) {
+      esriConfig.apiKey = "AAPK8f842f9f47af4822824fdb93bc774312cYJt7PpUWZ86RC8NdFNGsPSRoilYcSW-kH5c38Exn40Mz4JlzHmyckat6d2LN98o";
+
+      const webmap = new WebMap({
+        portalItem: {
+          id: "80998646a7a24237b8b7155f72f57935"
+        }
+      });
+
+      console.log(webmap.allLayers);
+      const view = new MapView({
+        map: webmap,
+        container: "viewDiv",
+        constraints: {
+          snapToZoom: false
+        }
+      });
+
+      const scalebar = new ScaleBar({
+        view: view
+      });
+
+      view.ui.add(scalebar, "bottom-left");
+
+      const legend = new Legend ({
+        view: view
+      });
+      // view.ui.add(legend, "top-right");
+
+
+    });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>
