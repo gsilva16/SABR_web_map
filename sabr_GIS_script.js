@@ -9,8 +9,9 @@ require([
   "esri/views/layers/LayerView",
   "esri/views/layers/FeatureLayerView",
   "esri/core/reactiveUtils",
-  "esri/widgets/Expand"
-], (esriConfig, Map, MapView, FeatureLayer, ScaleBar, Legend, relationshipRendererCreator, LayerView, FeatureLayerView, reactiveUtils, Expand) => {
+  "esri/widgets/Expand",
+  "esri/smartMapping/statistics/classBreaks"
+], (esriConfig, Map, MapView, FeatureLayer, ScaleBar, Legend, relationshipRendererCreator, LayerView, FeatureLayerView, reactiveUtils, Expand,classBreaks) => {
   (async () => {
 
     esriConfig.apiKey = "AAPK8f842f9f47af4822824fdb93bc774312cYJt7PpUWZ86RC8NdFNGsPSRoilYcSW-kH5c38Exn40Mz4JlzHmyckat6d2LN98o";
@@ -35,7 +36,7 @@ require([
 
 
 
-    const template = {
+    let template = {
       // autocasts as new PopupTemplate()
       title: "{LOCATION}",
       content: [
@@ -57,6 +58,7 @@ require([
         }
       ]
     };
+    // console.log(template.content[0].fieldInfos[1].fieldName);
 
     const sabrLayer = new FeatureLayer({
       url: "https://services1.arcgis.com/HLC8bAygObK4fhPW/arcgis/rest/services/SABR_MAP/FeatureServer/",
@@ -76,20 +78,44 @@ require([
         label: "Change in developed land area from 2020-2040"
       },
       focus: null,
-      defaultSymbolEnabled: true,
+      defaultSymbolEnabled: false,
       legendOptions: {
         showLegend: true
       }
     };
-
+    
     // when the promise resolves, apply the renderer to the layer
     relationshipRendererCreator.createRenderer(params)
       .then(function (response) {
         sabrLayer.renderer = response.renderer;
+        params.renderer = response.renderer;
+    //     classBreaks({
+    //       layer:sabrLayer,
+    //       field: params.field1.field,
+    //       numClasses:3
+    //     }).then(function(response) {
+    //    let breakInfos = response.classBreakInfos;
+    //    params.field1.classBreakInfos = response.classBreakInfos;   
+    //   });
+
+    //   classBreaks({
+    //     layer:sabrLayer,
+    //     field: params.field2.field,
+    //     numClasses:3
+    //   }).then(function(response) {
+    //  let breakInfos = response.classBreakInfos;
+    //  params.field2.classBreakInfos = response.classBreakInfos;   
+    // });
+    //     params.numClasses = 3;
+
+    //     console.log(sabrLayer.renderer);
       });
 
     map.add(sabrLayer);
 
+    
+    
+    // console.log(params);
     const legend = new Expand({
       content: new Legend({
         view: view,
@@ -103,8 +129,8 @@ require([
     view.ui.add(legend, "bottom-left");
 
     sabrLayer.when(() => {
-      console.log(sabrLayer);
-      console.log(sabrLayer.fields);
+      // console.log(sabrLayer);
+      // console.log(sabrLayer.fields);
     });
 
     let graphics;
@@ -120,24 +146,99 @@ require([
 
 
     for (var i = 0; i < sabrFields.length; i++) {
-      var opt = sabrFields[i];
-      var el = document.createElement("option");
+      let opt = sabrFields[i];
+      let el = document.createElement("option");
       el.textContent = opt;
       el.value = opt;
       select.appendChild(el);
+      // select2.appendChild(el);
     }
-
     for (var i = 0; i < sabrFields.length; i++) {
       var opt = sabrFields[i];
       var el = document.createElement("option");
       el.textContent = opt;
       el.value = opt;
+      // select.appendChild(el);
       select2.appendChild(el);
     }
-    console.log(sabrFields);
+    
+    let var1Val =params.field1.field ;
+    let var2Val = params.field2.field;
+    let curVar1 = document.getElementById("selectVar1");
+    let curVar2 = document.getElementById("selectVar2");
+    // console.log(curVar1);
+    console.log(params);
+    curVar1.addEventListener("change",changedVar1);
+    curVar2.addEventListener("change",changedVar2);
+    
+    function changedVar1(){
+      var1Val = curVar1.value;
+      // console.log("variable 1:" +var1Val);
+
+      params.field1.field=var1Val;
+      params.field1.label = 'newlabel1';
+
+      classBreaks({
+        layer:sabrLayer,
+        field: var1Val,
+        numClasses:3
+      }).then(function(response) {
+     let breakInfos = response.classBreakInfos;
+     params.field1.classBreakInfos = response.classBreakInfos;   
+    });
+
+    relationshipRendererCreator.updateRenderer(params)
+    .then(function (response) {
+      sabrLayer.renderer = response.renderer;
+    });
+
+    }
+    
+    function changedVar2(){
+      var2Val = curVar2.value;
+      params.field2.field = var2Val;
+      params.field2.label = 'newlabel2';
+
+      updateRenderer(params);
+
+      template.content[0].fieldInfos[1].fieldName = var2Val;
+      template.content[0].fieldInfos[1].label = "newlabel2";
+      sabrLayer.popupTemplate = template;
+
+      
+    //   classBreaks({
+    //     layer:sabrLayer,
+    //     field: var2Val,
+    //     numClasses:3
+    //   }).then(function(response) {
+    //  let breakInfos = response.classBreakInfos;
+    // //  console.log(breakInfos);
+    //  params.field2.classBreakInfos = response.classBreakInfos;   
+    // //  console.log(params);
+    // });
+      
+    // // console.log(cb2);
+
+    //   relationshipRendererCreator.updateRenderer(params)
+    //   .then(function (response) {
+    //     sabrLayer.renderer = response.renderer;
+    //   });
+    //   map.add(sabrLayer);
+    //   console.log(sabrLayer.renderer);
+    }
+
+
+    function updateRenderer(curParams) {
+      relationshipRendererCreator.createRenderer(curParams)
+      .then(function (response) {
+        sabrLayer.renderer = response.renderer;
+    });}
+
+    // console.log(sabrFields);
     
     // download(jsonData, 'json.txt', 'text/plain'); 
 
+    
 
 
     // view.popup.defaultPopupTemplateEnabled = true;
