@@ -24,7 +24,7 @@ require([
       container: "sceneDiv",
       map: map,
       center: [-81.00543, 36.42700],
-      zoom: 7
+      zoom: 7.95
     });
     const listNode = document.getElementById("sabr_graphics");
 
@@ -47,12 +47,12 @@ require([
           type: "fields",
           fieldInfos: [
             {
-              fieldName: "EP_UNINSUR",
-              label: "% of uninsured people"
+              fieldName: "EP_MOBILE",
+              label: "% of mobile homes"
             },
             {
-              fieldName: "developed",
-              label: "Change in developed land area from 2020-2040"
+              fieldName: "wet_qrtr_d",
+              label: "Change in percipitation (mm) of the wettest quarter"
             }
           ]
         }
@@ -70,12 +70,12 @@ require([
       layer: sabrLayer,
       view: view,
       field1: {
-        field: "EP_UNINSUR",
-        label: "% of uninsured people"
+        field: "EP_MOBILE",
+        label: "% of mobile homes"
       },
       field2: {
-        field: "developed",
-        label: "Change in developed land area from 2020-2040"
+        field: "wet_qrtr_d",
+        label: "Change in percipitation (mm) of the wettest quarter"
       },
       focus: null,
       defaultSymbolEnabled: false,
