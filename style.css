@@ -16,8 +16,8 @@ body,
 .panel-side {
   padding: 2px;
   box-sizing: border-box;
-  width: 400px;
-  height: 23%;
+  width: 30%;
+  height: 30%;
   position: absolute;
   top: 0;
   right: 0;
