@@ -55,7 +55,7 @@ require([
     };
 
     const sabrLayer = new FeatureLayer({
-      url: "https://services1.arcgis.com/HLC8bAygObK4fhPW/arcgis/rest/services/SABR_MAP/FeatureServer/",
+      url: "https://services1.arcgis.com/HLC8bAygObK4fhPW/arcgis/rest/services/SABR/FeatureServer",
       // id:"aba061d530cf405bb0fdd239e824b76b",
       outFields: ["*"],
       popupTemplate: template
