@@ -1,0 +1,59 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>ArcGIS Maps SDK for JavaScript Tutorials: Add a feature layer</title>
+  <style>
+    html, body, #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.29/"></script>
+  <script src="sabr_GIS_script.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+  <body>
+    <div class="panel-container">
+      <div class="panel-side esri-widget">
+        <h3>Variable Selection</h3>
+        <ul id="sabr_graphics">
+          <div class="custom-select">
+          <select id="selectVar1">
+            <option>Choose First Variable</option>
+        </select>
+      </div>
+      <div class="custom-select">  
+      <select  id="selectVar2">
+          <option>Choose Second Variable</option>
+      </select>
+    </div>
+    <form enctype="multipart/form-data" method="post" id="uploadForm">
+      <div class="field">
+        <label class="file-upload">
+          <span><strong>Add File</strong></span>
+          <input type="file" name="file" id="inShapeFile" />
+        </label>
+      </div>
+    </form>
+    <form action="/single" method="'get">
+      <button id="downloadProcessedFile" type="submit">Download processed shapefile</button>
+    </form>
+    <span class="file-upload-status" style="opacity:1;" id="upload-status"></span>
+        </ul>
+      </div>
+    
+      <div id="sceneDiv"></div>
+
+      <div class="container">
+        <div id="tableDiv"></div>
+      </div>
+    </div>
+
+
+
+  </body>
+</html>
