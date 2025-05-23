@@ -7,7 +7,6 @@ const path = require('path');
 const app = express();
 const port = 8000;
 const PROCESSEDFILEPATH = '.\\processed_files\\';
-// let fileNameWithoutExt;
 app.use(express.static('public'));
 console.log(__dirname);
 app.get('/',(req, res)=>{
@@ -30,13 +29,13 @@ app.get('/single', (req,res)=>{
        });
     python.on('close',(code)=>{
         console.log(`child process close all stdio with code ${code}`);
-        res.send(dataToSend);
+        // res.send(dataToSend);
     });
 });
 
 app.post('/upload',fileUpload({createParentPath: true}), (req, res)=>{
     const files = req.files;
-    // console.log('uploaded ',files);
+    console.log(files);
 
     Object.keys(files).forEach(key =>{
         const filepath = path.join(__dirname,'files',files[key].name);
@@ -46,10 +45,8 @@ app.post('/upload',fileUpload({createParentPath: true}), (req, res)=>{
 
         let fileNameWithExt = files[key].name;
         fileNameWithoutExt = fileNameWithExt.replace(/\.[^/.]+$/, "");
-        console.log('fileNameWithExt ',fileNameWithExt);
-        console.log('filenamewithoutext ',fileNameWithoutExt);
-        console.log(filepath);
-        const python = spawn('python',['.\\scripts\\processShapefile.py',fileNameWithExt,filepath,fileNameWithoutExt]);
+
+        const python = spawn('python',['.\\scripts\\processShapefile.py',files[key].name,filepath,fileNameWithoutExt]);
         python.stdout.on('data', function (data) {
             console.log(`Pipe data from python script ${data}`);
             dataToSend = data.toString();
@@ -57,7 +54,7 @@ app.post('/upload',fileUpload({createParentPath: true}), (req, res)=>{
             console.log(dataToSend);
            });
         python.on('close',(code)=>{
-            console.log(`process shapefile close with code ${code}`);
+            console.log(`child process close all stdio with code ${code}`);
             // res.send(dataToSend);
             return res.json({status:'success',message:Object.keys(files).toString(),processed_file:fileNameWithoutExt});
         });
