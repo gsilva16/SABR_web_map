@@ -117,10 +117,10 @@ require([
         );
 
         const json = await response.json();
-        
+        console.log('In script uploadShapefile function');
         console.log(json);
         clearGraphics();
-        generateFeatureCollection('./processed_files/'+json.processed_file+'_processed.zip');
+        generateFeatureCollection('C:\\Users\\guilh\\OneDrive\\Desktop\\sabr_web\\processed_files\\'+json.processed_file+'_processed.zip');
       }
       else {
         document.getElementById('upload-status').innerHTML = '<p style="color:red">Add shapefile as .zip file</p>';
